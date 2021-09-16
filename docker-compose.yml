@@ -1,0 +1,27 @@
+version: '3.7'
+
+services:
+  postgres:
+    #    image: postgres:10.7
+    image: debezium/postgres:10-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
+#    volumes:
+#      - ./postgresql_init.sql:/docker-entrypoint-initdb.d/init.sql
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
